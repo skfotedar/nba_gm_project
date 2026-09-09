@@ -1,0 +1,47 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# PyCharm
+.idea/
+
+# Environment variables / secrets
+.env
+.env.*
+*.key
+*.pem
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Logs
+*.log
+
+# Data files (uncomment if you don't want to track raw data/model artifacts)
+# *.csv
+# *.db
+# *.sqlite3
+# models/
+# data/raw/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
