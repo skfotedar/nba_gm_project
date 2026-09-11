@@ -1,0 +1,146 @@
+# =============================================================================
+# nba_gm_project -- package manifest
+#
+# One-time setup:
+#     python3 -m venv .venv
+#     source .venv/bin/activate          # Windows: .venv\Scripts\activate
+#     pip install -e ".[dev]"
+#
+# Then, from anywhere in the repo:
+#     pytest
+#
+# The -e flag is "editable": it points at this working directory rather than
+# copying code into site-packages, so edits to ledger.py take effect on the
+# next import with no reinstall. Re-run it only when dependencies change.
+# =============================================================================
+
+[project]
+name = "gmf"
+version = "0.1.0"
+description = "NBA general manager simulation: cap ledger, rules engine, and agentic front office"
+requires-python = ">=3.11"
+
+# Runtime dependencies. Keep this list SHORT and defend every addition.
+# The deterministic path (core/, config/) must stay importable with nothing
+# but pyyaml -- that is what makes it fast to test and hard to corrupt.
+# LLM and orchestration libraries belong in the optional groups below, never
+# here, so that `pip install gmf` can never pull langchain into core.
+dependencies = [
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+
+# Everything needed to develop and test. This is the group you install.
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+
+# Phase 2+. Listed now so the boundary is documented, installed later.
+# Adding a package here is a deliberate act; adding one to [project]
+# dependencies above is an architectural change.
+data = [
+    "pandas>=2.2",
+    "duckdb>=1.0",
+    "pandera>=0.20",
+    "httpx>=0.27",
+]
+
+agents = [
+    "langchain>=0.3",
+    "langgraph>=0.2",
+    "pydantic>=2.8",
+    "pydantic-settings>=2.4",
+    "structlog>=24.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+# -----------------------------------------------------------------------------
+# Package discovery
+# -----------------------------------------------------------------------------
+# The src/ layout. This line is why `src/gmf/` imports as `gmf` and not
+# `src.gmf`, and why an uninstalled package fails loudly instead of silently
+# importing from the repo root.
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# -----------------------------------------------------------------------------
+# pytest
+# -----------------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = [
+    "--strict-markers",     # a typo'd marker is an error, not a silent skip
+    "-ra",                  # summarize everything that did not pass
+]
+markers = [
+    "golden: frozen fixtures that must not change without a deliberate decision",
+    "integration: touches network, disk, or a live service",
+    "llm: costs money -- excluded from the default run",
+]
+
+# -----------------------------------------------------------------------------
+# ruff (lint + format)
+# -----------------------------------------------------------------------------
+[tool.ruff]
+line-length = 90
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",    # pycodestyle
+    "F",         # pyflakes
+    "I",         # import sorting
+    "UP",        # pyupgrade
+    "B",         # bugbear
+    "SIM",       # simplification
+    "RUF",
+]
+ignore = [
+    "E501",      # line length is handled by the formatter
+]
+
+# The rule that protects the deterministic path. core/ may not import the
+# orchestration or model layers, and ruff will reject it at lint time --
+# in addition to tests/architecture/test_core_purity.py, which catches the
+# same violation at test time via AST inspection. Two nets, because this is
+# the invariant the whole design rests on.
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"langchain".msg = "core/ is the deterministic path -- no LLM libraries"
+"langgraph".msg = "core/ is the deterministic path -- no orchestration"
+"openai".msg = "core/ is the deterministic path -- no model clients"
+"anthropic".msg = "core/ is the deterministic path -- no model clients"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B011"]
+
+# -----------------------------------------------------------------------------
+# mypy
+# -----------------------------------------------------------------------------
+# Strict on core/, lenient elsewhere. Cap arithmetic is where a type error
+# becomes a wrong dollar figure that nothing downstream will question.
+[tool.mypy]
+python_version = "3.11"
+files = ["src", "tests"]
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = "gmf.core.*"
+disallow_untyped_defs = true
+disallow_any_generics = true
+warn_return_any = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = ["yaml.*"]
+ignore_missing_imports = true
