@@ -1,0 +1,158 @@
+# =============================================================================
+# NBA cap constants under the 2023 Collective Bargaining Agreement
+# Repo path: configs/cba/nba_2023.yaml
+# =============================================================================
+#
+# PROVENANCE
+#   Every figure in this file is hand-entered from a cited source and verified
+#   by eye. Nothing here is recalled from memory, inferred, or extracted from a
+#   PDF by a model. If you cannot cite it, it stays `null`.
+#
+#   A `null` is honest. A guessed number is silently wrong forever, and every
+#   layer above the ledger inherits the error.
+#
+# CONVENTIONS
+#   - Amounts are EXACT INTEGER DOLLARS. No decimals, no commas, no "$164.96M".
+#     (A comma makes YAML read the value as a string, not a number.)
+#   - Indent with SPACES only. A single tab character is a parse error.
+#   - Season keys are quoted strings: "2026-27".
+#   - Load with yaml.safe_load(), never yaml.load().
+#   - This file contains DATA ONLY. No logic, no derived values. Anything that
+#     can be computed (distance to tax, apron tier) belongs in core/cap/.
+#
+# MAINTENANCE
+#   The league sets new figures each year in late June, effective July 1.
+#   Adding a season is a new block under `seasons:` — never edit a past season.
+#   Historical values must stay frozen or every backtest silently changes.
+#
+# SOURCES
+#   [1] NBA league press release, 2026-06-30, reproduced at Blazer's Edge
+#       https://www.blazersedge.com/nba-news-rumors/113970/nba-sets-salary-cap-for-2026-27-season
+#   [2] Hoops Rumors, 2026-07-02
+#       https://www.hoopsrumors.com/2026/06/salary-cap-tax-line-set-for-2026-27-nba-season.html
+#   [3] Eric Pincus, 2026-06-30 (minimum salary figures)
+#       https://ericpincus.substack.com/p/happy-nba-new-year-2026-27-plus-cap
+#
+# VERIFIED BY: skf
+# VERIFIED ON: 2026-09-12
+#
+# -----------------------------------------------------------------------------
+# READ THIS BEFORE WRITING core/cap/ledger.py
+# -----------------------------------------------------------------------------
+# The thresholds below are NOT all measured against the same payroll number.
+# One roster produces three different totals:
+#
+#   team salary    -> compared against salary_cap
+#                     actual salaries plus cap holds and other cap charges
+#   tax salary     -> compared against luxury_tax_line
+#                     locked in at the end of the regular season
+#   apron salary   -> compared against first_apron / second_apron
+#                     starts from team salary, then strips out some cap holds
+#                     and adds back items such as unlikely bonuses
+#
+# CapPosition therefore needs THREE payroll fields, not one. Collapsing them
+# into a single total is the most expensive mistake available in this layer.
+# Source: [2], and the apron explainer at stocksandbuckets.com (2026-07-03).
+# =============================================================================
+
+cba_version: "2023"
+
+# Which season the app defaults to when none is specified.
+current_season: "2026-27"
+
+seasons:
+
+  # ---------------------------------------------------------------------------
+  # 2026-27 — official, set by the league 2026-06-30, effective 2026-07-01
+  # ---------------------------------------------------------------------------
+  "2026-27":
+    verified: true
+    source_refs: [1, 2, 3]
+    effective_date: "2026-07-01"
+
+    # League-wide thresholds. Sources [1] and [2] agree exactly on all five.
+    salary_cap:          164961000
+    minimum_team_salary: 148465000
+    luxury_tax_line:     200428000
+    first_apron:         209015000
+    second_apron:        221686000
+
+    # Minimum salaries scale across roughly ten years-of-service tiers.
+    # Only the three below are sourced. DO NOT interpolate the rest —
+    # the scale is negotiated, not linear.
+    minimums:
+      rookie:   1357763    # also the empty roster charge [3]
+      yos_2:    2449421    # [3]
+      two_way:   678882    # [3]
+      # yos_1, yos_3 .. yos_10_plus: not yet sourced
+
+    # Three MLEs exist depending on a team's salary level [1].
+    # Exact 2026-27 dollar values not yet sourced.
+    # core/rules/ must refuse to evaluate any path that reads a null here.
+    exceptions:
+      non_taxpayer_mle: null
+      taxpayer_mle:     null
+      room_mle:         null
+      bi_annual:        null
+      disabled_player:  null
+
+    # Maximum cash a team may send OR receive across the league year.
+    # The two directions are tracked separately — sending the limit and
+    # receiving the limit are independent, not offsetting [2].
+    # CONFIRM against the press release before ledger code depends on this.
+    trade_cash_limit:      8495000
+
+    # Maximum salary by years of service, as a percentage of the cap.
+    # Standard CBA tiers. Confirm the exact percentages against the CBA text
+    # before use; they are structural, not annual, but verify once.
+    max_salary_pct:
+      yos_0_6:   null      # commonly cited as 25%
+      yos_7_9:   null      # commonly cited as 30%
+      yos_10_plus: null    # commonly cited as 35%
+
+  # ---------------------------------------------------------------------------
+  # 2025-26 — prior season, needed for backtesting and year-over-year deltas
+  # Only the cap itself is sourced so far (via [1], as the comparison figure).
+  # ---------------------------------------------------------------------------
+  "2025-26":
+    verified: false
+    source_refs: [1]
+    effective_date: "2025-07-01"
+
+    salary_cap:          154647000   # [1], cited as the prior-year figure
+    minimum_team_salary: null
+    luxury_tax_line:     null
+    first_apron:         null
+    second_apron:        null
+
+    minimums:
+      rookie:   null
+      yos_2:    null
+      two_way:  null
+
+    exceptions:
+      non_taxpayer_mle: null
+      taxpayer_mle:     null
+      room_mle:         null
+      bi_annual:        null
+      disabled_player:  null
+
+    trade_cash_limit: null
+
+    max_salary_pct:
+      yos_0_6:     null
+      yos_7_9:     null
+      yos_10_plus: null
+
+# =============================================================================
+# OPEN ITEMS — clear before core/rules/trade_legality.py is written
+# =============================================================================
+# 1. Fill the full minimum salary scale for 2026-27 (all YOS tiers).
+# 2. Source the three MLE amounts and the BAE for 2026-27.
+# 3. Backfill 2025-26 thresholds from the June 2025 league press release.
+# 4. Confirm max-salary percentages against the CBA text itself.
+# 5. Decide boundary semantics: is a team AT the apron line restricted, or only
+#    ABOVE it? This is a strict-vs-inclusive comparison in code and the answer
+#    must come from the CBA text, not from an assumption. Record it in
+#    docs/design/ and write the golden test to match.
+# =============================================================================
