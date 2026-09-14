@@ -1,0 +1,297 @@
+{
+  "meta": {
+    "project": "nba_gm_project",
+    "schema": 1,
+    "next_story": 15,
+    "sprint_length_days": 14,
+    "default_capacity": 8,
+    "definition_of_done": [
+      "Acceptance criteria met",
+      "pytest passes locally",
+      "Architecture purity test passes (once it exists)",
+      "Committed with the story ID in the message, e.g. 'S-004: ...'",
+      "Pushed to GitHub"
+    ],
+    "sessions_per_week": 5,
+    "notes": "1 pt ~ one focused 1-hour session. 5 sessions/week, 2-week sprints = 10 sessions; commit ~8 and keep 2 as slack."
+  },
+  "epics": [
+    {
+      "id": "E0",
+      "title": "Project hygiene and process",
+      "deferred": false
+    },
+    {
+      "id": "E1",
+      "title": "Package skeleton and cap math (Block 1)",
+      "deferred": false
+    },
+    {
+      "id": "E2",
+      "title": "Frozen CBA config and architecture guard (Block 2)",
+      "deferred": false
+    },
+    {
+      "id": "E3",
+      "title": "Ingest and Postgres ledger (Block 3)",
+      "deferred": false
+    },
+    {
+      "id": "E4",
+      "title": "Trade legality rules (Block 4)",
+      "deferred": false
+    },
+    {
+      "id": "E5",
+      "title": "Retrieval, MCP, agents, graph, evals (Block 5)",
+      "deferred": true
+    }
+  ],
+  "stories": [
+    {
+      "id": "S-001",
+      "title": "Commit and push the docs/ rename",
+      "epic": "E0",
+      "points": 1,
+      "status": "todo",
+      "sprint": 1,
+      "description": "",
+      "acceptance": [
+        "git status is clean",
+        "GitHub shows docs/ and not '.design document'"
+      ],
+      "created": "2026-09-11",
+      "started": null,
+      "done": null,
+      "notes": []
+    },
+    {
+      "id": "S-002",
+      "title": "Commit scrum tooling and PyCharm run configs",
+      "epic": "E0",
+      "points": 1,
+      "status": "todo",
+      "sprint": 1,
+      "description": "",
+      "acceptance": [
+        "tools/scrum.py, scrum/board.json, .run/ and docs/SCRUM.md are on GitHub",
+        "Scrum folder appears in PyCharm run dropdown"
+      ],
+      "created": "2026-09-11",
+      "started": null,
+      "done": null,
+      "notes": []
+    },
+    {
+      "id": "S-003",
+      "title": "Decide on consolidated v1.1 design doc",
+      "epic": "E0",
+      "points": 1,
+      "status": "todo",
+      "sprint": 1,
+      "description": "",
+      "acceptance": [
+        "Decision recorded in docs/",
+        "Exactly one design document is the source of truth"
+      ],
+      "created": "2026-09-11",
+      "started": null,
+      "done": null,
+      "notes": []
+    },
+    {
+      "id": "S-004",
+      "title": "Installable package skeleton with pyproject.toml",
+      "epic": "E1",
+      "points": 2,
+      "status": "todo",
+      "sprint": 1,
+      "description": "",
+      "acceptance": [
+        "pip install -e . succeeds in the project venv",
+        "Package imports from a fresh Python session",
+        "pytest discovers and runs a smoke test"
+      ],
+      "created": "2026-09-11",
+      "started": null,
+      "done": null,
+      "notes": []
+    },
+    {
+      "id": "S-005",
+      "title": "Money types in core/types.py with float rejection",
+      "epic": "E1",
+      "points": 2,
+      "status": "todo",
+      "sprint": 1,
+      "description": "",
+      "acceptance": [
+        "All money values are Decimal",
+        "Passing a float raises at the boundary",
+        "Contract and Roster types have unit tests"
+      ],
+      "created": "2026-09-11",
+      "started": null,
+      "done": null,
+      "notes": []
+    },
+    {
+      "id": "S-006",
+      "title": "Cap math functions with pytest cases",
+      "epic": "E1",
+      "points": 3,
+      "status": "backlog",
+      "sprint": null,
+      "description": "",
+      "acceptance": [
+        "Payroll and cap-space calculations are pure functions",
+        "Tests cover at least one hand-worked real-team example"
+      ],
+      "created": "2026-09-11",
+      "started": null,
+      "done": null,
+      "notes": []
+    },
+    {
+      "id": "S-007",
+      "title": "cba_2026.yaml with hand-sourced CBA constants",
+      "epic": "E2",
+      "points": 3,
+      "status": "backlog",
+      "sprint": null,
+      "description": "",
+      "acceptance": [
+        "Every constant has a source citation",
+        "Config loads into a frozen (immutable) object"
+      ],
+      "created": "2026-09-11",
+      "started": null,
+      "done": null,
+      "notes": []
+    },
+    {
+      "id": "S-008",
+      "title": "cap_ledger.py pure functions over frozen config",
+      "epic": "E2",
+      "points": 3,
+      "status": "backlog",
+      "sprint": null,
+      "description": "",
+      "acceptance": [
+        "No I/O or globals inside ledger functions",
+        "Tests pass using the frozen config"
+      ],
+      "created": "2026-09-11",
+      "started": null,
+      "done": null,
+      "notes": []
+    },
+    {
+      "id": "S-009",
+      "title": "Architecture purity test: no LLM imports in the core",
+      "epic": "E2",
+      "points": 1,
+      "status": "todo",
+      "sprint": 1,
+      "description": "",
+      "acceptance": [
+        "Test fails if any core module imports an LLM client",
+        "Test runs as part of the normal pytest suite"
+      ],
+      "created": "2026-09-11",
+      "started": null,
+      "done": null,
+      "notes": []
+    },
+    {
+      "id": "S-010",
+      "title": "Postgres ledger schema",
+      "epic": "E3",
+      "points": 3,
+      "status": "backlog",
+      "sprint": null,
+      "description": "",
+      "acceptance": [],
+      "created": "2026-09-11",
+      "started": null,
+      "done": null,
+      "notes": []
+    },
+    {
+      "id": "S-011",
+      "title": "Load and validate the hand-maintained ledger",
+      "epic": "E3",
+      "points": 3,
+      "status": "backlog",
+      "sprint": null,
+      "description": "",
+      "acceptance": [],
+      "created": "2026-09-11",
+      "started": null,
+      "done": null,
+      "notes": []
+    },
+    {
+      "id": "S-012",
+      "title": "Sportradar nightly reconciliation",
+      "epic": "E3",
+      "points": 3,
+      "status": "backlog",
+      "sprint": null,
+      "description": "",
+      "acceptance": [],
+      "created": "2026-09-11",
+      "started": null,
+      "done": null,
+      "notes": []
+    },
+    {
+      "id": "S-013",
+      "title": "Trade salary-matching rules",
+      "epic": "E4",
+      "points": 3,
+      "status": "backlog",
+      "sprint": null,
+      "description": "",
+      "acceptance": [],
+      "created": "2026-09-11",
+      "started": null,
+      "done": null,
+      "notes": []
+    },
+    {
+      "id": "S-014",
+      "title": "Apron and hard-cap trade restrictions",
+      "epic": "E4",
+      "points": 3,
+      "status": "backlog",
+      "sprint": null,
+      "description": "",
+      "acceptance": [],
+      "created": "2026-09-11",
+      "started": null,
+      "done": null,
+      "notes": []
+    }
+  ],
+  "sprints": [
+    {
+      "id": 1,
+      "name": "Sprint 1",
+      "goal": "Repo is clean, the process is running, and the package installs with money types and a purity guard",
+      "start": "2026-09-14",
+      "end": "2026-09-27",
+      "capacity": 8,
+      "status": "planned",
+      "committed_points": null,
+      "completed_points": null,
+      "release": "v0.1.0",
+      "goal_met": null,
+      "carried_over": [],
+      "retro": null,
+      "closed": null,
+      "released": null
+    }
+  ],
+  "standups": []
+}
