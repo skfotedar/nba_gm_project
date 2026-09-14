@@ -18,7 +18,7 @@
 name = "gmf"
 version = "0.1.0"
 description = "NBA general manager simulation: cap ledger, rules engine, and agentic front office"
-requires-python = ">=3.11"
+requires-python = ">=3.14"
 
 # Runtime dependencies. Keep this list SHORT and defend every addition.
 # The deterministic path (core/, config/) must stay importable with nothing
@@ -128,7 +128,7 @@ ignore = [
 # Strict on core/, lenient elsewhere. Cap arithmetic is where a type error
 # becomes a wrong dollar figure that nothing downstream will question.
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.14"
 files = ["src", "tests"]
 warn_unused_configs = true
 warn_redundant_casts = true

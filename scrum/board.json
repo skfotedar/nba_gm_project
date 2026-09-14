@@ -104,7 +104,7 @@
       "title": "Installable package skeleton with pyproject.toml",
       "epic": "E1",
       "points": 2,
-      "status": "todo",
+      "status": "doing",
       "sprint": 1,
       "description": "",
       "acceptance": [
@@ -113,7 +113,7 @@
         "pytest discovers and runs a smoke test"
       ],
       "created": "2026-09-11",
-      "started": null,
+      "started": "2026-09-14",
       "done": null,
       "notes": []
     },
