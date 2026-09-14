@@ -282,8 +282,8 @@
       "start": "2026-09-14",
       "end": "2026-09-27",
       "capacity": 8,
-      "status": "planned",
-      "committed_points": null,
+      "status": "active",
+      "committed_points": 8,
       "completed_points": null,
       "release": "v0.1.0",
       "goal_met": null,
@@ -293,5 +293,14 @@
       "released": null
     }
   ],
-  "standups": []
+  "standups": [
+    {
+      "date": "2026-09-14",
+      "time": "2026-09-14 14:54",
+      "sprint": 1,
+      "last": "Nothing, first sprint is today",
+      "today": "S-003 (1) — decide on the consolidated v1.1 design doc",
+      "blockers": "S-004 (2) — installable package skeleton with pyproject.tomlnothing yet"
+    }
+  ]
 }

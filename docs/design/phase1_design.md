@@ -1,9 +1,9 @@
-# Sports GM Forecaster v2 — Phase 1 Design (Consolidated, v2.2)
+# NBA GM Project — Phase 1 Design (Consolidated, v2.2)
 
 **Version:** 2.2
 **Supersedes:** `sports_gm_phase1_design_1.md`, `sports_gm_phase1_addendum.md`, v2.0, v2.1
-**Status of those files:** retain the addendum unchanged as a provenance record of the
-design evolution; `design_1.md` is superseded in full and should not be built against.
+**Status of those files:** neither source file is retained in this repository. Appendix A
+is the surviving record of the design evolution.
 
 **What changed in v2.2.** DECIDE-1 and DECIDE-4 are resolved and folded into design text.
 Retrodictive eval seeds historical ledgers at three trade deadlines. The rules subset is
@@ -23,9 +23,9 @@ which is what §3 always said it was. Sections 7–13 are renumbered from v2.0's
 plus a redrawn component diagram, the `legality_check` table, the pgvector decision, and
 four open decisions stated as build blockers (§12). Full change log in Appendix A.
 
-**Reading rule.** Where this document and either source file disagree, this document
-wins. Items marked **DECIDE** are unresolved and must be answered before the affected
-module is built; they are not defaults.
+**Reading rule.** This document is the sole source of truth for Phase 1. Items marked
+**DECIDE** are unresolved and must be answered before the affected module is built; they
+are not defaults.
 
 ---
 
