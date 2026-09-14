@@ -53,7 +53,7 @@
       "title": "Commit and push the docs/ rename",
       "epic": "E0",
       "points": 1,
-      "status": "todo",
+      "status": "done",
       "sprint": 1,
       "description": "",
       "acceptance": [
@@ -62,7 +62,7 @@
       ],
       "created": "2026-09-11",
       "started": null,
-      "done": null,
+      "done": "2026-09-14",
       "notes": []
     },
     {
@@ -70,7 +70,7 @@
       "title": "Commit scrum tooling and PyCharm run configs",
       "epic": "E0",
       "points": 1,
-      "status": "todo",
+      "status": "done",
       "sprint": 1,
       "description": "",
       "acceptance": [
@@ -79,7 +79,7 @@
       ],
       "created": "2026-09-11",
       "started": null,
-      "done": null,
+      "done": "2026-09-14",
       "notes": []
     },
     {
@@ -87,7 +87,7 @@
       "title": "Decide on consolidated v1.1 design doc",
       "epic": "E0",
       "points": 1,
-      "status": "todo",
+      "status": "done",
       "sprint": 1,
       "description": "",
       "acceptance": [
@@ -96,7 +96,7 @@
       ],
       "created": "2026-09-11",
       "started": null,
-      "done": null,
+      "done": "2026-09-14",
       "notes": []
     },
     {
