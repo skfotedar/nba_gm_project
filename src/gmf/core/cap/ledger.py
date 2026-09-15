@@ -30,25 +30,26 @@ ON APPROXIMATION
 
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from decimal import Decimal
-from enum import Enum
-from typing import Iterable
+from enum import StrEnum
+from typing import Any
 
 from gmf.core.types import ZERO, Contract, Money, Roster, to_money
 
 __all__ = [
     "ApronTier",
     "Boundary",
-    "UnsourcedConstantError",
-    "Thresholds",
-    "PayrollAdjustments",
     "CapPosition",
-    "team_salary",
-    "tax_salary",
+    "PayrollAdjustments",
+    "Thresholds",
+    "UnsourcedConstantError",
     "apron_salary",
-    "classify_tier",
     "cap_position",
+    "classify_tier",
+    "tax_salary",
+    "team_salary",
 ]
 
 
@@ -60,7 +61,7 @@ class UnsourcedConstantError(ValueError):
     """
 
 
-class Boundary(str, Enum):
+class Boundary(StrEnum):
     """Whether a team sitting exactly ON a threshold is over it.
 
     OPEN ITEM. The CBA text decides this, not us. Until it is resolved and
@@ -72,7 +73,7 @@ class Boundary(str, Enum):
     AT_OR_ABOVE = "at_or_above"
 
 
-class ApronTier(str, Enum):
+class ApronTier(StrEnum):
     """Which spending band a team occupies. Ordered least to most restricted."""
 
     UNDER_CAP = "under_cap"
@@ -140,7 +141,7 @@ class Thresholds:
             )
 
     @classmethod
-    def from_config(cls, season: str, block: dict) -> "Thresholds":
+    def from_config(cls, season: str, block: dict[str, Any]) -> Thresholds:
         """Build from a parsed ``seasons[<season>]`` block.
 
         Any required field that is null in the YAML raises rather than
@@ -336,7 +337,8 @@ def classify_tier(
     return ApronTier.UNDER_CAP
 
 
-def _over(boundary: Boundary):
+def _over(boundary: Boundary) -> Callable[[Money, Money], bool]:
+    """Return the comparison for 'is value over line' under this boundary rule."""
     if boundary is Boundary.ABOVE:
         return lambda value, line: value > line
     return lambda value, line: value >= line

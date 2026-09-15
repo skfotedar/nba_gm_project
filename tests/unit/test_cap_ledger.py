@@ -13,13 +13,11 @@ import pytest
 from gmf.core.cap.ledger import (
     ApronTier,
     Boundary,
-    CapPosition,
     PayrollAdjustments,
     Thresholds,
     UnsourcedConstantError,
     apron_salary,
     cap_position,
-    classify_tier,
     team_salary,
 )
 from gmf.core.types import Contract, Roster
@@ -29,13 +27,12 @@ SEASON = "2026-27"
 # floor 140M < cap 160M < tax 200M < apron1 210M < apron2 220M
 T = Thresholds(
     season=SEASON,
-    salary_cap=160_000_000,
-    minimum_team_salary=140_000_000,
-    luxury_tax_line=200_000_000,
-    first_apron=210_000_000,
-    second_apron=220_000_000,
+    salary_cap=Decimal(160_000_000),
+    minimum_team_salary=Decimal(140_000_000),
+    luxury_tax_line=Decimal(200_000_000),
+    first_apron=Decimal(210_000_000),
+    second_apron=Decimal(220_000_000),
 )
-
 
 def roster(*amounts, team="TST", dead_amounts=()):
     contracts = [

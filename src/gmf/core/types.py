@@ -10,29 +10,39 @@ amounts and cap arithmetic is compared against hard thresholds, so binary
 floating point is not acceptable here.
 """
 
-from __future__ import annotations
-
+from collections.abc import Iterable
 from dataclasses import dataclass, field
-from decimal import ROUND_HALF_UP, Decimal
-from enum import Enum
-from typing import Iterable
+from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
+from enum import StrEnum
 
 __all__ = [
-    "Money",
-    "to_money",
     "ZERO",
-    "ContractOption",
     "Contract",
+    "ContractOption",
+    "FloatMoneyError",
+    "Money",
     "Roster",
     "season_key",
+    "to_money",
+    "total_cap_hits",
 ]
 
+# Plain alias (not a PEP 695 ``type`` statement) so ``Money(...)`` and
+# ``isinstance(x, Money)`` keep working for callers.
 Money = Decimal
 
 #: Cap arithmetic is done in whole dollars.
-_CENT = Decimal("1")
+_DOLLAR = Decimal("1")
 
 ZERO: Money = Decimal("0")
+
+
+class FloatMoneyError(TypeError):
+    """Raised when a float reaches a money boundary.
+
+    Subclasses ``TypeError`` so existing ``except TypeError`` handlers still
+    catch it.
+    """
 
 
 def to_money(value: object) -> Money:
@@ -42,20 +52,30 @@ def to_money(value: object) -> Money:
     this function means an upstream layer lost exactness, and we want that
     to fail loudly at the boundary instead of drifting by a few cents.
     """
+    # bool is a subclass of int; without this, True would become $1.
+    if isinstance(value, bool):
+        raise TypeError("refusing to build Money from bool")
     if isinstance(value, float):
-        raise TypeError(
-            "refusing to build Money from float; pass str, int, or Decimal"
+        raise FloatMoneyError(
+            f"refusing to build Money from float {value!r}; pass str, int, or Decimal"
         )
     if isinstance(value, Decimal):
         dec = value
-    elif isinstance(value, (int, str)):
+    elif isinstance(value, int):
         dec = Decimal(value)
+    elif isinstance(value, str):
+        try:
+            dec = Decimal(value.strip())
+        except InvalidOperation as exc:
+            raise ValueError(f"not a valid money string: {value!r}") from exc
     else:
         raise TypeError(f"cannot convert {type(value).__name__} to Money")
-    return dec.quantize(_CENT, rounding=ROUND_HALF_UP)
+    if not dec.is_finite():
+        raise ValueError(f"Money must be finite, got {dec}")
+    return dec.quantize(_DOLLAR, rounding=ROUND_HALF_UP)
 
 
-class ContractOption(str, Enum):
+class ContractOption(StrEnum):
     """Option structure attached to a contract year."""
 
     NONE = "none"
@@ -82,6 +102,7 @@ class Contract:
     incoming_trade_exception: bool = False
 
     def __post_init__(self) -> None:
+        # frozen=True blocks normal assignment, so use object.__setattr__
         object.__setattr__(self, "cap_hit", to_money(self.cap_hit))
         if self.cap_hit < ZERO:
             raise ValueError(f"negative cap hit for {self.player_id}: {self.cap_hit}")

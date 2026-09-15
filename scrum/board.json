@@ -122,7 +122,7 @@
       "title": "Money types in core/types.py with float rejection",
       "epic": "E1",
       "points": 2,
-      "status": "todo",
+      "status": "done",
       "sprint": 1,
       "description": "",
       "acceptance": [
@@ -132,7 +132,7 @@
       ],
       "created": "2026-09-11",
       "started": null,
-      "done": null,
+      "done": "2026-09-15",
       "notes": []
     },
     {
@@ -306,6 +306,22 @@
       "last": "Nothing, first sprint is today",
       "today": "S-003 (1) — decide on the consolidated v1.1 design doc",
       "blockers": "S-004 (2) — installable package skeleton with pyproject.tomlnothing yet"
+    },
+    {
+      "date": "2026-09-15",
+      "time": "2026-09-15 13:42",
+      "sprint": 1,
+      "last": "Stories 1-4",
+      "today": "5-7",
+      "blockers": "don't know yet"
+    },
+    {
+      "date": "2026-09-15",
+      "time": "2026-09-15 14:57",
+      "sprint": 1,
+      "last": "Story 5",
+      "today": "Story 6",
+      "blockers": "none"
     }
   ]
 }
