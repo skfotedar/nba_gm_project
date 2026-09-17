@@ -140,7 +140,7 @@
       "title": "Cap math functions with pytest cases",
       "epic": "E1",
       "points": 3,
-      "status": "backlog",
+      "status": "doing",
       "sprint": null,
       "description": "",
       "acceptance": [
@@ -148,7 +148,7 @@
         "Tests cover at least one hand-worked real-team example"
       ],
       "created": "2026-09-11",
-      "started": null,
+      "started": "2026-09-17",
       "done": null,
       "notes": []
     },

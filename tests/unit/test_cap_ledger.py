@@ -19,7 +19,9 @@ from gmf.core.cap.ledger import (
     apron_salary,
     cap_position,
     team_salary,
+    cap_space
 )
+
 from gmf.core.types import Contract, Roster
 
 SEASON = "2026-27"
@@ -179,3 +181,10 @@ def test_cap_position_is_pure():
     cap_position(r, T)
     cap_position(r, T)
     assert tuple(c.cap_hit for c in r.contracts) == before
+
+
+def test_cap_space_is_a_standalone_pure_function():
+    r = roster(150_000_000)
+    assert cap_space(team_salary(r), T) == Decimal(10_000_000)
+    assert cap_space(Decimal(170_000_000), T) == Decimal(-10_000_000)
+    assert cap_position(r, T).cap_space == cap_space(team_salary(r), T)

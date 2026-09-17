@@ -50,6 +50,7 @@ __all__ = [
     "classify_tier",
     "tax_salary",
     "team_salary",
+    "cap_space"
 ]
 
 
@@ -225,7 +226,7 @@ class CapPosition:
 
     @property
     def cap_space(self) -> Money:
-        return to_money(self.thresholds.salary_cap - self.team_salary)
+        return cap_space(self.team_salary, self.thresholds)
 
     @property
     def cap_room(self) -> Money:
@@ -397,3 +398,7 @@ def cap_position(
         boundary=boundary,
         approximations=tuple(approximations),
     )
+
+def cap_space(team_sal: Money, thresholds: Thresholds) -> Money:
+    """Signed room under the salary cap. Negative means over it."""
+    return to_money(thresholds.salary_cap - team_sal)
